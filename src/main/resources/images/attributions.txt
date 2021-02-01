@@ -1,0 +1,15 @@
+The images directory
+contains two images
+from the National Galleries
+of Scotland,
+downloaded from Wikipedia.
+These are:
+``Lady Agnew of Lochnaw"
+by John Singer Sargent,
+photograph by Ad Meskens,
+\url{https://commons.wikimedia.org/w/index.php?curid=29347966}
+(Public Domain)
+
+ant ``The Reverend Robert Walker Skating on Duddingston Loch''
+by Henry Raeburn,
+\url{https://commons.wikimedia.org/w/index.php?curid=715320}

@@ -1,0 +1,338 @@
+Programming Challenge 15.1:
+fun makeRed(): Picture {
+    val pixelsRed = Array<Array<Color>>(height()) {
+        row ->
+        Array<Color>(width()) {
+            column ->
+            val pixel = pixelByRowColumn(row, column)
+            Color(pixel.red, 0, 0)
+        }
+    }
+    return Picture(pixelsRed)
+}
+
+Programming Challenge 15.2:
+fun makeBlue() : Picture {
+    val pixelsRed = Array<Array<Color>>(height()) {
+        row ->
+        Array<Color>(width()) {
+            column ->
+            val pixel = pixelByRowColumn(row, column)
+            Color(0, 0, pixel.blue)
+        }
+    }
+    return Picture(pixelsRed)
+}
+
+
+After Programming Challenge 15.2:
+fun makeRed() : Picture {
+    val makePixelRed = {it : Color -> Color(it.red, 0, 0)}
+    val pixelsRed = Array<Array<Color>>(height()) {
+        row ->
+        Array<Color>(width()) {
+            column ->
+            val pixel = pixelByRowColumn(row, column)
+            makePixelRed(pixel)
+        }
+    }
+    return Picture(pixelsRed)
+}
+
+Refactoring of makeRed() just before Programming Challenge 15.3:
+fun transform(pixelTransformation: (Color) -> (Color)): Picture {
+    val transformed = Array<Array<Color>>(height()) {
+        row ->
+        Array<Color>(width()) {
+            column ->
+            val pixel = pixelByRowColumn(row, column)
+            pixelTransformation(pixel)
+        }
+    }
+    return Picture(transformed)
+}
+
+
+fun makeRed() : Picture {
+    val makePixelRed = {it : Color -> Color(it.red, 0, 0)}
+    return transform(makePixelRed)
+}
+
+
+Programming Challenge 15.4:
+fun makeMess() : Picture {
+    val makePixelBlue = {it : Color -> Color(it.green, it.blue, it.red)}
+    return transform(makePixelBlue)
+}
+
+
+Programming Challenge 15.5:
+val function = {it : Color ->
+    val average = (it.red + it.green + it.blue)/3
+    Color(average, average, average)
+}
+
+
+Section 15.2:
+@Test
+fun transformTest() {
+    //Start with an image in which all pixels are green.
+    val file = Paths.get(IMAGES + "green_h50_w100.png").toFile()
+    val loaded = loadPictureFromFile(file)
+    //Create a transformation
+    //that turns each pixel red.
+    val red = Color(255, 0, 0)
+    val toRed = { it: Color -> red }
+    //Call the transform function
+    //using the red transformation.
+    val changed = loaded.transform(toRed)
+
+    //For each row in the result...
+    for (row in 0..49) {
+        //for each pixel in the row...
+        for (column in 0..99) {
+            Assert.assertEquals(changed.pixelByRowColumn(row, column), red)
+        }
+    }
+}
+
+Section 15.3:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "agent99.png").toFile()
+    return loadPictureFromFile(file)
+}
+
+
+Also Section 15.3:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "agent99.png").toFile()
+    val makeBW = {
+        it : Color ->
+        val brightness = (it.red + it.green + it.blue) / 3
+        if (brightness > 128) {
+            Color(255, 255, 255)
+        } else {
+            Color(0, 0, 0)
+        }
+    }
+    return loadPictureFromFile(file).transform(makeBW)
+}
+
+
+Programming Challenge 15.7:
+val makeBlackPurple = {
+    it: Color ->
+    if (it.red + it.green + it.blue < 140) {
+        val halfGreen = it.green / 2
+        Color(it.red + halfGreen, 0, it.blue + halfGreen)
+    } else {
+        it
+    }
+}
+
+
+Before Programming Challenge 15.8:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "ladyagnew.png").toFile()
+    val approximater = {
+        it: Color ->
+        Color((it.red/32) * 32, (it.green/32) * 32, (it.blue/32) * 32)
+    }
+    return loadPictureFromFile(file).transform(approximater)
+}
+
+
+Section 15.4:
+fun transformByPosition(pixelTransformation: ((Int), (Int)) -> (Color)): Picture {
+    val transformed = Array<Array<Color>>(height()) {
+        row ->
+        Array<Color>(width()) {
+            column ->
+            pixelTransformation(row, column)
+        }
+    }
+    return Picture(transformed)
+}
+
+Also Section 15.4:
+fun blackBar(): Picture {
+    val blackAtTop = { row: Int, column: Int
+        ->
+        val originalPixel = pixelByRowColumn(row, column)
+        if (row < 50) {
+            Color(0, 0, 0)
+        } else {
+            originalPixel
+        }
+    }
+    return transformByPosition(blackAtTop)
+}
+
+
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "cradlemt.png").toFile()
+    return loadPictureFromFile(file).blackBar()
+}
+
+
+Programming Challenge 15.12:
+fun darkBorder(): Picture {
+    val borderWidth = 50
+    val darkSides = { row: Int, column: Int
+        ->
+        val originalPixel = pixelByRowColumn(row, column)
+        val isInBorder = column < borderWidth || width() - column < borderWidth
+        if (isInBorder) {
+            originalPixel.darker()
+        } else {
+            originalPixel
+        }
+    }
+    return transformByPosition(darkSides)
+}
+
+
+---- Solutions to Programming Challenges ----
+Programming Challenge 15.1:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "bay.png").toFile()
+    return loadPictureFromFile(file).makeRed()
+}
+
+Programming Challenge 15.2:
+fun makeGreen() : Picture {
+    val pixelsRed = Array<Array<Color>>(height()) {
+        row ->
+        Array<Color>(width()) {
+            column ->
+            val pixel = pixelByRowColumn(row, column)
+            Color(0, pixel.green, 0)
+        }
+    }
+    return Picture(pixelsRed)
+}
+
+Programming Challenge 15.3:
+fun makeBlue() : Picture {
+    val makePixelBlue = {it : Color -> Color(0, 0, it.blue)}
+    return transform(makePixelBlue)
+}
+
+Programming Challenge 15.4:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "bay.png").toFile()
+    return loadPictureFromFile(file).makeMess()
+}
+
+Programming Challenge 15.5:
+fun makeGray() : Picture {
+    val function = {it : Color ->
+        val average = (it.red + it.green + it.blue)/3
+        Color(average, average, average)
+    }
+    return transform(function)
+}
+
+
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "bay.png").toFile()
+    return loadPictureFromFile(file).makeGrey()
+}
+
+
+Programming Challenge 15.6:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "waratah.jpg").toFile()
+    val keepRed = {
+        it: Color ->
+        if (it.red > 180) {
+            it
+        } else {
+            val average = (it.red + it.green + it.blue) / 3
+            Color(average, average, average)
+        }
+    }
+    return loadPictureFromFile(file).transform(keepRed)
+}
+
+
+Programming Challenge 15.7:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "skatingminister.png").toFile()
+    val makeBlackPurple = {
+        it: Color ->
+        if (it.red + it.green + it.blue < 140) {
+            val halfGreen = it.green / 2
+            Color(it.red + halfGreen, 0, it.blue + halfGreen)
+        } else {
+            it
+        }
+    }
+    return loadPictureFromFile(file).transform(makeBlackPurple)
+}
+
+
+Programming Challenge 15.9:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "ladyagnew.png").toFile()
+    val approximater = {
+        it: Color ->
+        Color((it.red/32) * 32, (it.green/32) * 32, (it.blue/32) * 32)
+    }
+    return loadPictureFromFile(file).transform(approximater)
+}
+
+Programming Challenge 15.10:
+fun blackBar(): Picture {
+    val blackAtSide = { row: Int, column: Int
+        ->
+        val originalPixel = pixelByRowColumn(row, column)
+        if (column < 50) {
+            Color(0, 0, 0)
+        } else {
+            originalPixel
+        }
+    }
+    return transformByPosition(blackAtSide)
+}
+
+Programming Challenge 15.11:
+fun blackBar(): Picture {
+    val borderWidth = 50;
+    val blackAtSide = { row: Int, column: Int
+        ->
+        val originalPixel = pixelByRowColumn(row, column)
+        val color = if (column < borderWidth || width() - column < borderWidth) {
+            Color(0, 0, 0)
+        } else {
+            originalPixel
+        }
+        color
+    }
+    return transformByPosition(blackAtSide)
+}
+
+Programming Challenge 15.12:
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "cradlemt.png").toFile()
+    return loadPictureFromFile(file).darkBorder()
+}
+
+Programming Challenge 15.13:
+fun darkBorder(): Picture {
+    val borderWidth = 50
+    val darkSides = { row: Int, column: Int
+        ->
+        val originalPixel = pixelByRowColumn(row, column)
+        val isInBorder = row < borderWidth || row > height() - borderWidth || column < borderWidth || width() - column < borderWidth
+        if (isInBorder) {
+            originalPixel.darker().darker()
+        } else {
+            originalPixel
+        }
+    }
+    return transformByPosition(darkSides)
+}
+
+
+
