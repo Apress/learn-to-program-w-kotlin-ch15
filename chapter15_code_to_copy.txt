@@ -1,9 +1,7 @@
 Programming Challenge 15.1:
 fun makeRed(): Picture {
-    val pixelsRed = Array<Array<Color>>(height()) {
-        row ->
-        Array<Color>(width()) {
-            column ->
+    val pixelsRed = Array(height()) { row ->
+        Array(width()) { column ->
             val pixel = pixelByRowColumn(row, column)
             Color(pixel.red, 0, 0)
         }
@@ -12,11 +10,9 @@ fun makeRed(): Picture {
 }
 
 Programming Challenge 15.2:
-fun makeBlue() : Picture {
-    val pixelsRed = Array<Array<Color>>(height()) {
-        row ->
-        Array<Color>(width()) {
-            column ->
+fun makeBlue(): Picture {
+    val pixelsRed = Array(height()) { row ->
+        Array(width()) { column ->
             val pixel = pixelByRowColumn(row, column)
             Color(0, 0, pixel.blue)
         }
@@ -24,14 +20,11 @@ fun makeBlue() : Picture {
     return Picture(pixelsRed)
 }
 
-
 After Programming Challenge 15.2:
-fun makeRed() : Picture {
-    val makePixelRed = {it : Color -> Color(it.red, 0, 0)}
-    val pixelsRed = Array<Array<Color>>(height()) {
-        row ->
-        Array<Color>(width()) {
-            column ->
+fun makeRed(): Picture {
+    val makePixelRed = { it: Color -> Color(it.red, 0, 0) }
+    val pixelsRed = Array(height()) { row ->
+        Array(width()) { column ->
             val pixel = pixelByRowColumn(row, column)
             makePixelRed(pixel)
         }
@@ -41,10 +34,8 @@ fun makeRed() : Picture {
 
 Refactoring of makeRed() just before Programming Challenge 15.3:
 fun transform(pixelTransformation: (Color) -> (Color)): Picture {
-    val transformed = Array<Array<Color>>(height()) {
-        row ->
-        Array<Color>(width()) {
-            column ->
+    val transformed = Array(height()) { row ->
+        Array(width()) { column ->
             val pixel = pixelByRowColumn(row, column)
             pixelTransformation(pixel)
         }
