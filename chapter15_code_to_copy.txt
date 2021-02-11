@@ -1,4 +1,4 @@
-Programming Challenge 15.1:
+Just before Programming Challenge 15.1:
 fun makeRed(): Picture {
     val pixelsRed = Array(height()) { row ->
         Array(width()) { column ->
@@ -9,7 +9,7 @@ fun makeRed(): Picture {
     return Picture(pixelsRed)
 }
 
-Programming Challenge 15.2:
+Just before Programming Challenge 15.2:
 fun makeBlue(): Picture {
     val pixelsRed = Array(height()) { row ->
         Array(width()) { column ->
@@ -42,7 +42,6 @@ fun transform(pixelTransformation: (Color) -> (Color)): Picture {
     }
     return Picture(transformed)
 }
-
 
 fun makeRed() : Picture {
     val makePixelRed = {it : Color -> Color(it.red, 0, 0)}
@@ -111,14 +110,17 @@ override fun createPicture(): Picture {
 
 
 Programming Challenge 15.7:
-val makeBlackPurple = {
-    it: Color ->
-    if (it.red + it.green + it.blue < 140) {
-        val halfGreen = it.green / 2
-        Color(it.red + halfGreen, 0, it.blue + halfGreen)
-    } else {
-        it
+override fun createPicture(): Picture {
+    val file = Paths.get(IMAGES + "skatingminister.png").toFile()
+    val makeBlackPurple = { it: Color ->
+        if (it.red + it.green + it.blue < 140) {
+            val halfGreen = it.green / 2
+            Color(it.red + halfGreen, 0, it.blue + halfGreen)
+        } else {
+            it
+        }
     }
+    return loadPictureFromFile(file).transform(makeBlackPurple)
 }
 
 
@@ -135,10 +137,8 @@ override fun createPicture(): Picture {
 
 Section 15.4:
 fun transformByPosition(pixelTransformation: ((Int), (Int)) -> (Color)): Picture {
-    val transformed = Array<Array<Color>>(height()) {
-        row ->
-        Array<Color>(width()) {
-            column ->
+    val transformed = Array(height()) { row ->
+        Array(width()) { column ->
             pixelTransformation(row, column)
         }
     }
@@ -191,11 +191,9 @@ override fun createPicture(): Picture {
 }
 
 Programming Challenge 15.2:
-fun makeGreen() : Picture {
-    val pixelsRed = Array<Array<Color>>(height()) {
-        row ->
-        Array<Color>(width()) {
-            column ->
+fun makeGreen(): Picture {
+    val pixelsRed = Array(height()) { row ->
+        Array(width()) { column ->
             val pixel = pixelByRowColumn(row, column)
             Color(0, pixel.green, 0)
         }
@@ -227,7 +225,7 @@ fun makeGray() : Picture {
 
 override fun createPicture(): Picture {
     val file = Paths.get(IMAGES + "bay.png").toFile()
-    return loadPictureFromFile(file).makeGrey()
+    return loadPictureFromFile(file).makeGray()
 }
 
 
